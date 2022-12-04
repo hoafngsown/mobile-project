@@ -18,14 +18,12 @@ import LoadingCircular from "../components/common/Loading";
 
 export default function UpdateInfo({ navigation }) {
   const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const onHandleUpdateInfo = () => {
     setIsLoading(true);
     return updateProfile(auth.currentUser, {
       displayName: name,
-      phoneNumber,
     })
       .then(() => {
         go(navigation, ROUTER.LOGIN);
@@ -44,26 +42,15 @@ export default function UpdateInfo({ navigation }) {
       {isLoading && <LoadingCircular visible={isLoading} />}
       <View style={styles.whiteSheet} />
       <SafeAreaView style={styles.form}>
-        <Text style={styles.title}>ENTER YOUR INFORMATION</Text>
+        <Text style={styles.title}>ENTER YOUR DISPLAY NAME</Text>
         <TextInput
           style={styles.input}
-          placeholder="Bin Chilling..."
+          placeholder="Enter your display name"
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
           value={name}
           onChangeText={(text) => setName(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="090xxxxx73"
-          autoCapitalize="none"
-          autoCorrect={false}
-          secureTextEntry={true}
-          textContentType="text"
-          value={phoneNumber}
-          maxLength={11}
-          onChangeText={(text) => setPhoneNumber(text)}
         />
         <TouchableOpacity style={styles.button} onPress={onHandleUpdateInfo}>
           <Text style={{ fontWeight: "bold", color: "#fff", fontSize: 18 }}>

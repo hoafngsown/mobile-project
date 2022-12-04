@@ -24,6 +24,8 @@ export default function Play({ navigation }) {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isStartCount, setIsStartCount] = useState(true);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [isStart, setIsStart] = useState(false);
+  const [currentIndexAnswer, setCurrentIndexAnswers] = useState(0);
 
   const timeLeft = useTimer(isStartCount);
   useEffect(() => {
@@ -39,13 +41,14 @@ export default function Play({ navigation }) {
     if (index == 4) return "D";
   }
 
-  const handleClick = (item) => {
+  const handleClick = (item, index) => {
+    setIsStart(true);
     if (item.isCorrect) {
-      Alert.alert("Good")
-      // setIsCorrect(true)
-    } else {
-      Alert.alert("Next time..")
-      // setIsCorrect(false)
+      setIsCorrect(true)
+      setCurrentIndexAnswers(index);
+    } else {  
+      setIsCorrect(false)
+      setCurrentIndexAnswers(index);
     }
   }
 
@@ -140,16 +143,45 @@ export default function Play({ navigation }) {
         {listAnswer &&
           listAnswer.length > 0 &&
           listAnswer[0]?.answers &&
-          listAnswer[0]?.answers?.map((item, index) => (
-            <View style={styles.answerBtn} key={index}>
-              <ButtonAnswer
-                textMain={item?.answer}
-                textIndex={answerIndex(index + 1)}
-                // style={{backgroundColor: isCorrect ? 'green' : ''}}
-                onPress={() => {handleClick(item)}}
-              />
-            </View>
-          ))}
+          listAnswer[0]?.answers?.map((item, index) => {
+            if (!isStart) {
+              return (
+                <View style={styles.answerBtn} key={index}>
+                  <ButtonAnswer
+                    textMain={item?.answer}
+                    textIndex={answerIndex(index + 1)}
+                    onPress={() => {handleClick(item, index)}}
+                  />
+                </View>
+              )
+            } else {
+              if (index == currentIndexAnswer) {
+                return (
+                  <View style={styles.answerBtn} key={index}>
+                    <ButtonAnswer
+                      textMain={item?.answer}
+                      textIndex={answerIndex(index + 1)}
+                      style={{
+                        backgroundColor: isCorrect ? 'green' : 'red'
+                      }}
+                      onPress={() => {handleClick(item, index)}}
+                    />
+                  </View>
+                )
+              } else {
+                return (
+                  <View style={styles.answerBtn} key={index}>
+                    <ButtonAnswer
+                      textMain={item?.answer}
+                      textIndex={answerIndex(index + 1)}
+                      onPress={() => {handleClick(item, index)}}
+                    />
+                  </View>
+                )
+              }
+            }
+          })
+        }
       </View>
     </View>
   );
